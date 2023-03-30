@@ -43,8 +43,11 @@ namespace CustomMath
             //Debug.Log(Vector3.Cross(v1, v2));
             //Debug.Log(Vec3.Cross(v3, v4));
 
-            result1 = Vector3.Distance(v1, v2);
-            result2 = Vec3.Distance(v3, v4);
+            //result1 = Vector3.Distance(v1, v2);
+            //result2 = Vec3.Distance(v3, v4);
+
+            result1 = Vector3.Dot(v1, v2);
+            result2 = Vec3.Dot(v3, v4);
 
             Debug.Log(result1);
             Debug.Log(result2);

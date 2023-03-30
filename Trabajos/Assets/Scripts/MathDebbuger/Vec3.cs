@@ -152,9 +152,9 @@ namespace CustomMath
 
             return Mathf.Sqrt(distance_x * distance_x + distance_y * distance_y + distance_z * distance_z);
         }
-        public static float Dot(Vec3 a, Vec3 b)
+        public static float Dot(Vec3 a, Vec3 b) // Producto de dos vectores
         {
-            throw new NotImplementedException();
+            return a.x * b.x + a.y * b.y + a.z * b.z;
         }
         public static Vec3 Lerp(Vec3 a, Vec3 b, float t)
         {
