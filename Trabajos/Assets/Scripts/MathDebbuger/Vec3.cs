@@ -128,17 +128,17 @@ namespace CustomMath
         {
             return "X = " + x.ToString() + "   Y = " + y.ToString() + "   Z = " + z.ToString();
         }
-        public static float Angle(Vec3 from, Vec3 to)
-        {
-            throw new NotImplementedException();
-        }
+        //public static float Angle(Vec3 from, Vec3 to) // Dados el punto inicial de un vector y el final de otro, calcular el angulo mediante pitagoras
+        //{
+        //    return Mathf.Acos(Mathf.Sqrt(Mathf.Pow(to.x + from.y, 2) + Mathf.Pow(to.y + from.y, 2) + Mathf.Pow(to.z + from.z, 2))) * Mathf.Rad2Deg;
+        //}
         public static Vec3 ClampMagnitude(Vec3 vector, float maxLength)
         {
             throw new NotImplementedException();
         }
-        public static float Magnitude(Vec3 vector)
+        public static float Magnitude(Vec3 vector) // Distancia en tre un punto y otro, mediante pitagoras
         {
-            throw new NotImplementedException();
+            return (float)Mathf.Sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
         }
         public static Vec3 Cross(Vec3 a, Vec3 b)
         {
