@@ -174,9 +174,9 @@ namespace CustomMath
         {
             return new Vec3(Mathf.Min(a.x, b.x), Mathf.Min(a.y, b.y), Mathf.Min(a.z, b.z));
         }
-        public static float SqrMagnitude(Vec3 vector)
+        public static float SqrMagnitude(Vec3 vector) // Igual que Magnitude pero sin calcular Sqrt
         {
-            throw new NotImplementedException();
+            return vector.x * vector.x + vector.y * vector.y + vector.z * vector.z;
         }
         public static Vec3 Project(Vec3 vector, Vec3 onNormal) 
         {

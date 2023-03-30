@@ -56,14 +56,17 @@ namespace CustomMath
             //Debug.Log(Vector3.LerpUnclamped(v1, v2, timeElapsed));
             //Debug.Log(Vec3.LerpUnclamped(v3, v4, timeElapsed));
 
-            Debug.Log(Vector3.Max(v1, v2));
-            Debug.Log(Vec3.Max(v3, v4));
+            //Debug.Log(Vector3.Max(v1, v2));
+            //Debug.Log(Vec3.Max(v3, v4));
 
-            Debug.Log(Vector3.Min(v1, v2));
-            Debug.Log(Vec3.Min(v3, v4));
+            //Debug.Log(Vector3.Min(v1, v2));
+            //Debug.Log(Vec3.Min(v3, v4));
 
-            //Debug.Log(result1);
-            //Debug.Log(result2);
+            result1 = Vector3.SqrMagnitude(v1);
+            result2 = Vec3.SqrMagnitude(v3);
+
+            Debug.Log(result1);
+            Debug.Log(result2);
         }
     }  
 }
