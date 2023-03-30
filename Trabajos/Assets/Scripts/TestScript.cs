@@ -50,11 +50,17 @@ namespace CustomMath
             //result1 = Vector3.Dot(v1, v2);
             //result2 = Vec3.Dot(v3, v4);
 
-            Debug.Log(Vector3.Lerp(v1, v2, timeElapsed));
-            Debug.Log(Vec3.Lerp(v3, v4, timeElapsed));
+            //Debug.Log(Vector3.Lerp(v1, v2, timeElapsed));
+            //Debug.Log(Vec3.Lerp(v3, v4, timeElapsed));
 
-            Debug.Log(Vector3.LerpUnclamped(v1, v2, timeElapsed));
-            Debug.Log(Vec3.LerpUnclamped(v3, v4, timeElapsed));
+            //Debug.Log(Vector3.LerpUnclamped(v1, v2, timeElapsed));
+            //Debug.Log(Vec3.LerpUnclamped(v3, v4, timeElapsed));
+
+            Debug.Log(Vector3.Max(v1, v2));
+            Debug.Log(Vec3.Max(v3, v4));
+
+            Debug.Log(Vector3.Min(v1, v2));
+            Debug.Log(Vec3.Min(v3, v4));
 
             //Debug.Log(result1);
             //Debug.Log(result2);
