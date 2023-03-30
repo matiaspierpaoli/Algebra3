@@ -37,8 +37,11 @@ namespace CustomMath
             //result1 = Vector3.Magnitude(v1);
             //result2 = Vec3.Magnitude(v3);
 
-            Debug.Log(Vector3.ClampMagnitude(v1, maxLenght));
-            Debug.Log(Vec3.ClampMagnitude(v3, maxLenght));
+            //Debug.Log(Vector3.ClampMagnitude(v1, maxLenght));
+            //Debug.Log(Vec3.ClampMagnitude(v3, maxLenght));
+
+            Debug.Log(Vector3.Cross(v1, v2));
+            Debug.Log(Vec3.Cross(v3, v4));
         }
     }  
 }

@@ -140,9 +140,9 @@ namespace CustomMath
         {
             return (float)Mathf.Sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
         }
-        public static Vec3 Cross(Vec3 a, Vec3 b)
+        public static Vec3 Cross(Vec3 a, Vec3 b) // Producto punto, vector perpendicular a los otros dos pasados por parametro
         {
-            throw new NotImplementedException();
+            return new Vec3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
         }
         public static float Distance(Vec3 a, Vec3 b)
         {
