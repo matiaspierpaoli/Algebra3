@@ -21,6 +21,8 @@ namespace CustomMath
         float result1;
         float result2;
 
+        float maxLenght = 10;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -32,8 +34,11 @@ namespace CustomMath
             //result1 = Vector3.Angle(v1, v2);
             //result2 = Vec3.Angle(v3, v4);
 
-            Debug.Log(result1);
-            Debug.Log(result2);
+            //result1 = Vector3.Magnitude(v1);
+            //result2 = Vec3.Magnitude(v3);
+
+            Debug.Log(Vector3.ClampMagnitude(v1, maxLenght));
+            Debug.Log(Vec3.ClampMagnitude(v3, maxLenght));
         }
     }  
 }

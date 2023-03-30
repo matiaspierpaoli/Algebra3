@@ -132,11 +132,11 @@ namespace CustomMath
         //{
         //    return Mathf.Acos(Mathf.Sqrt(Mathf.Pow(to.x + from.y, 2) + Mathf.Pow(to.y + from.y, 2) + Mathf.Pow(to.z + from.z, 2))) * Mathf.Rad2Deg;
         //}
-        public static Vec3 ClampMagnitude(Vec3 vector, float maxLength)
+        public static Vec3 ClampMagnitude(Vec3 vector, float maxLength) // Cortar magnitud
         {
-            throw new NotImplementedException();
+            return new Vec3((vector / Magnitude(vector)) * maxLength);
         }
-        public static float Magnitude(Vec3 vector) // Distancia en tre un punto y otro, mediante pitagoras
+        public static float Magnitude(Vec3 vector) // Distancia entre un punto y otro, mediante pitagoras
         {
             return (float)Mathf.Sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
         }
