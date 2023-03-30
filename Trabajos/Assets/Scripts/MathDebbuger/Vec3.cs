@@ -156,13 +156,15 @@ namespace CustomMath
         {
             return a.x * b.x + a.y * b.y + a.z * b.z;
         }
-        public static Vec3 Lerp(Vec3 a, Vec3 b, float t)
+        public static Vec3 Lerp(Vec3 a, Vec3 b, float t) // Calcula la interpolacion lineal medante dos puntos y un intermediario,
+                                                         // comunmente usado para mover un objeto de un punto a otro en cierto periodo de tiempo
         {
-            throw new NotImplementedException();
+            t = Mathf.Clamp01(t); // Limitar el valor de t de 0 a 1
+            return new Vec3(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t);
         }
-        public static Vec3 LerpUnclamped(Vec3 a, Vec3 b, float t)
+        public static Vec3 LerpUnclamped(Vec3 a, Vec3 b, float t) // Igual que lerp esta vez sin clampar t
         {
-            throw new NotImplementedException();
+            return new Vec3(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t);
         }
         public static Vec3 Max(Vec3 a, Vec3 b)
         {
