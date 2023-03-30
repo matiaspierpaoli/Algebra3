@@ -144,9 +144,13 @@ namespace CustomMath
         {
             return new Vec3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
         }
-        public static float Distance(Vec3 a, Vec3 b)
+        public static float Distance(Vec3 a, Vec3 b) // Distancia entre dos vectores mediante pitagoras
         {
-            throw new NotImplementedException();
+            float distance_x = a.x - b.x;
+            float distance_y = a.y - b.y;
+            float distance_z = a.z - b.z;
+
+            return Mathf.Sqrt(distance_x * distance_x + distance_y * distance_y + distance_z * distance_z);
         }
         public static float Dot(Vec3 a, Vec3 b)
         {
