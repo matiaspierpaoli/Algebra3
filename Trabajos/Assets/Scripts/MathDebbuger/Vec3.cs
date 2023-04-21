@@ -178,12 +178,8 @@ namespace CustomMath
         {
             return vector.x * vector.x + vector.y * vector.y + vector.z * vector.z;
         }
-        //public static Vec3 Project(Vec3 vector, Vec3 onNormal) 
-        //{
-        //    throw new NotImplementedException();
-        //}
         public static Vec3 Project(Vec3 vector, Vec3 onNormal) // Se calcula la ptoyeccion de "vector" en el plano definido por onNormal
-                                                               // El vector resultante representa vector en la direccion de normal
+                                                               // El vector resultante representa el vector en la direccion de normal
         {
             float sqrMag = SqrMagnitude(onNormal);
             if (sqrMag < Mathf.Epsilon)
@@ -191,10 +187,10 @@ namespace CustomMath
             else
                 return onNormal * Vec3.Dot(vector, onNormal) / sqrMag;
         }
-
-        public static Vec3 Reflect(Vec3 inDirection, Vec3 inNormal) 
+        public static Vec3 Reflect(Vec3 inDirection, Vec3 inNormal) // Se calcula la refleccion de inDirection en el plano definido por inNormal
+                                                                    // El vector resultante representa el vector en la direcion en la que el objeto rebota con la superficie
         {
-            throw new NotImplementedException();
+            return inDirection - 2 * Vec3.Dot(inDirection, inNormal) * inNormal;
         }
         public void Set(float newX, float newY, float newZ)
         {
