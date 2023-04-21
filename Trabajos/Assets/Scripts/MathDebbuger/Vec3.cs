@@ -178,10 +178,20 @@ namespace CustomMath
         {
             return vector.x * vector.x + vector.y * vector.y + vector.z * vector.z;
         }
-        public static Vec3 Project(Vec3 vector, Vec3 onNormal) 
+        //public static Vec3 Project(Vec3 vector, Vec3 onNormal) 
+        //{
+        //    throw new NotImplementedException();
+        //}
+        public static Vec3 Project(Vec3 vector, Vec3 onNormal) // Se calcula la ptoyeccion de "vector" en el plano definido por onNormal
+                                                               // El vector resultante representa vector en la direccion de normal
         {
-            throw new NotImplementedException();
+            float sqrMag = SqrMagnitude(onNormal);
+            if (sqrMag < Mathf.Epsilon)
+                return new Vec3(0f, 0f, 0f);
+            else
+                return onNormal * Vec3.Dot(vector, onNormal) / sqrMag;
         }
+
         public static Vec3 Reflect(Vec3 inDirection, Vec3 inNormal) 
         {
             throw new NotImplementedException();
