@@ -145,10 +145,11 @@ namespace CustomMath
         {
             return "X = " + x.ToString() + "   Y = " + y.ToString() + "   Z = " + z.ToString();
         }
-        //public static float Angle(Vec3 from, Vec3 to) // Dados el punto inicial de un vector y el final de otro, calcular el angulo mediante pitagoras
-        //{
-        //    return Mathf.Acos(Mathf.Sqrt(Mathf.Pow(to.x + from.y, 2) + Mathf.Pow(to.y + from.y, 2) + Mathf.Pow(to.z + from.z, 2))) * Mathf.Rad2Deg;
-        //}
+        public static float Angle(Vec3 from, Vec3 to)
+        {
+            float dot = Dot(from.normalized, to.normalized); // Producto de los dos vectores normalizados
+            return Mathf.Acos(Mathf.Clamp(dot, -1f, 1f)) * Mathf.Rad2Deg; // Arcocoseno del producto es el angulo en radianes, pero luego se pasa a grados
+        }
         public static Vec3 ClampMagnitude(Vec3 vector, float maxLength) // Cortar magnitud
         {
             return new Vec3((vector / Magnitude(vector)) * maxLength);
