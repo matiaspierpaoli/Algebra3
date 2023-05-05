@@ -11,8 +11,25 @@ namespace CustomMath
         public float y;
         public float z;
 
-        public float sqrMagnitude { get { throw new NotImplementedException(); } }
-        public Vector3 normalized { get { throw new NotImplementedException(); } }
+        public float sqrMagnitude 
+        { 
+            get 
+            { 
+                Vec3 newVec3 = new Vec3(x,y,z);
+                return Magnitude(newVec3); 
+            }  
+        }
+
+        public Vec3 normalized 
+        { 
+            get 
+            {
+                Vec3 newVec3 = new Vec3(x, y, z);
+                newVec3.Normalize();
+                return newVec3;
+            } 
+        }
+
         public float magnitude { get { throw new NotImplementedException(); } }
         #endregion
 
@@ -209,7 +226,7 @@ namespace CustomMath
             float mag = magnitude;
             x /= mag;
             y /= mag;
-            z /= mag;
+            z /= mag;          
         }
         #endregion
 
