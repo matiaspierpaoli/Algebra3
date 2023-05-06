@@ -21,8 +21,8 @@ namespace CustomMath
         float result1;
         float result2;
 
-        float maxLenght = 10;
-        float timeElapsed = 10;
+        //float maxLenght = 10;
+        //float timeElapsed = 10;
 
         // Start is called before the first frame update
         void Start()

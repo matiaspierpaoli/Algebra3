@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+
 namespace CustomMath
 {
     public struct Vec3 : IEquatable<Vec3>
@@ -21,16 +22,30 @@ namespace CustomMath
         }
 
         public Vec3 normalized 
-        { 
+        {
             get 
             {
-                Vec3 newVec3 = new Vec3(x, y, z);
-                newVec3.Normalize();
-                return newVec3;
-            } 
+                Vec3 newVec3 = new Vec3(x,y,z);
+                float length = newVec3.magnitude;
+                if (length > 0)                
+                    return newVec3 / length;              
+                else                
+                    return Zero;
+                
+
+                //Vec3 newVec3 = new Vec3(x, y, z);
+                //newVec3.Normalize();
+                //return newVec3;
+            }
         }
 
-        public float magnitude { get { throw new NotImplementedException(); } }
+        public float magnitude 
+        {
+            get 
+            {
+                return Mathf.Sqrt(x * x + y * y + z * z); 
+            }
+        }
         #endregion
 
         #region constants
@@ -222,12 +237,9 @@ namespace CustomMath
             y *= scale.y;
             z *= scale.z;
         }
-        public void Normalize()
+        public static Vec3 Normalize(Vec3 vector)
         {
-            float mag = magnitude;
-            x /= mag;
-            y /= mag;
-            z /= mag;          
+            return new Vec3(vector.x / vector.magnitude, vector.y / vector.magnitude, vector.z / vector.magnitude);        
         }
         #endregion
 
