@@ -64,7 +64,7 @@ namespace CustomMath
             get { return new Quat(0f, 0f, 0f, 1f); }
         }
 
-        public Vector3 eulerAngles // Con los euler angles se puede obtener los angulos de rotacion en grados
+        public Vec3 eulerAngles // Con los euler angles se puede obtener los angulos de rotacion en grados
         {
             get
             {
@@ -73,7 +73,7 @@ namespace CustomMath
                 float angleY = Mathf.Rad2Deg * Mathf.Asin(2 * (w * y - z * x)); // Asin calucla el angulo entre el vector "2 * (w * y - z * x)" proyectado en el plano YZ, y el eje Z positivo
                 float angleZ = Mathf.Rad2Deg * Mathf.Atan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z)); // Atan2 calcula el angulo entre el vector "2 * (w * z + x * y)" pryectado en el eje XZ, y el eje X positivo
 
-                return new Vector3(angleX, angleY, angleZ);
+                return new Vec3(angleX, angleY, angleZ);
             }
         }
 
@@ -84,6 +84,100 @@ namespace CustomMath
         #endregion
 
         #region Methods
+
+        public static float Angle(Quat a, Quat b) // El angulo entre dos Quaternions se calcula a partir de su producto clampeado el cual devuelve un float que se le aplica Acos,
+                                                              // y con este numero en radianes se lo pasa a grados
+        {
+            float dotProduct = Dot(a, b);
+            dotProduct = Mathf.Clamp(dotProduct, -1f, 1f);
+            float angleRad = Mathf.Acos(dotProduct);
+            return Mathf.Rad2Deg * angleRad;
+        }
+
+        public static Quat AngleAxis(float angle, Vec3 axis) // El quaternion devuelto representa la rotacion sobre un eje de un angulo especificados, primero angulo despues eje
+        {
+            float angleRad = Mathf.Deg2Rad * angle;
+            Vec3 normalizedAxis = axis.normalized;
+            
+            float halfAngle = angleRad * 0.5f;
+
+            float sinHalfAngle = Mathf.Sin(halfAngle);
+            float cosHalfAngle = Mathf.Cos(halfAngle);
+
+            float qx = normalizedAxis.x * sinHalfAngle;
+            float qy = normalizedAxis.y * sinHalfAngle;
+            float qz = normalizedAxis.z * sinHalfAngle;
+            float qw = cosHalfAngle;
+
+            return new Quat(qx, qy, qz, qw);
+        }
+
+        public static Quat AxisAngle(Vec3 axis, float angle) // El quaternion devuelto representa la rotacion sobre un eje de un angulo especificados, primero eje despues angulo
+        {
+            float angleRad = Mathf.Deg2Rad * angle;
+            Vec3 normalizedAxis = axis.normalized;
+
+            float halfAngle = angleRad * 0.5f;
+
+            float sinHalfAngle = Mathf.Sin(halfAngle);
+            float cosHalfAngle = Mathf.Cos(halfAngle);
+
+            float qx = normalizedAxis.x * sinHalfAngle;
+            float qy = normalizedAxis.y * sinHalfAngle;
+            float qz = normalizedAxis.z * sinHalfAngle;
+            float qw = cosHalfAngle;
+
+            return new Quat(qx, qy, qz, qw);
+        }
+
+        public static float Dot(Quat a, Quat b) // La suma total de la multiplcacion entre cada componente
+        {
+            return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+        }
+
+        public static Quat Euler(Vec3 euler) // Convierte angulos euler en un quaternion trabajando cada componente por separado, tomando como parametros un vector3
+        {
+            Vec3 eulerRad = euler * Mathf.Deg2Rad;
+
+            float halfX = eulerRad.x * 0.5f;
+            float halfY = eulerRad.y * 0.5f;
+            float halfZ = eulerRad.z * 0.5f;
+
+            float sinX = Mathf.Sin(halfX);
+            float cosX = Mathf.Cos(halfX);
+            float sinY = Mathf.Sin(halfY);
+            float cosY = Mathf.Cos(halfY);
+            float sinZ = Mathf.Sin(halfZ);
+            float cosZ = Mathf.Cos(halfZ);
+
+            float qx = sinX * cosY * cosZ - cosX * sinY * sinZ;
+            float qy = cosX * sinY * cosZ + sinX * cosY * sinZ;
+            float qz = cosX * cosY * sinZ - sinX * sinY * cosZ;
+            float qw = cosX * cosY * cosZ + sinX * sinY * sinZ;
+
+            return new Quat(qx, qy, qz, qw);
+        }
+
+        public static Quat Euler(float x, float y, float z) // Convierte angulos euler en un quaternion trabajando cada componente por separado, tomando como parametros componentes de un vector3
+        {
+            float halfX = (Mathf.Deg2Rad * x ) * 0.5f;
+            float halfY = (Mathf.Deg2Rad * y) * 0.5f;
+            float halfZ = (Mathf.Deg2Rad * z) * 0.5f;
+
+            float sinX = Mathf.Sin(halfX);
+            float cosX = Mathf.Cos(halfX);
+            float sinY = Mathf.Sin(halfY);
+            float cosY = Mathf.Cos(halfY);
+            float sinZ = Mathf.Sin(halfZ);
+            float cosZ = Mathf.Cos(halfZ);
+
+            float qx = sinX * cosY * cosZ - cosX * sinY * sinZ;
+            float qy = cosX * sinY * cosZ + sinX * cosY * sinZ;
+            float qz = cosX * cosY * sinZ - sinX * sinY * cosZ;
+            float qw = cosX * cosY * cosZ + sinX * sinY * sinZ;
+
+            return new Quat(qx, qy, qz, qw);
+        }
 
         public void Normalize() // Simplemente normalizar cada variable del quat sin devolver nada
         {
