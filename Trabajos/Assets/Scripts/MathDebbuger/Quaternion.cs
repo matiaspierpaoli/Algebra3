@@ -179,6 +179,48 @@ namespace CustomMath
             return new Quat(qx, qy, qz, qw);
         }
 
+        public static Quat FromToRotation(Vec3 fromDirection, Vec3 toDirection) // Se crea un quaternion que representa la rotacion desde un vector a otro
+        {
+            Vec3 from = fromDirection.normalized;
+            Vec3 to = toDirection.normalized;
+
+            float dot = Vec3.Dot(from, to);
+
+            if (dot >= 1f - Mathf.Epsilon) // Si son paralelos
+            {
+                return identity;
+            }
+            else if (dot <= -1f + Mathf.Epsilon) // Si son opuestos, se rota en 180 en un eje arbitrario
+            {
+                Vec3 orthogonalAxis = Vec3.Cross(Vec3.Forward, from).normalized;
+                return AngleAxis(180f, orthogonalAxis);
+            }
+            else
+            {
+                Vec3 rotationAxis = Vec3.Cross(from, to).normalized;
+                float rotationAngle = Mathf.Acos(dot) * Mathf.Rad2Deg;
+
+                return AngleAxis(rotationAngle, rotationAxis);
+            }
+        }
+
+        public static Quat Inverse(Quat rotation) // Se niegan los componentes imaginarios pero el real se mantiene
+        {
+            return new Quat(-rotation.x, -rotation.y, -rotation.z, rotation.w);
+        }
+
+        public static Quat Lerp(Quat a, Quat b, float t) // Se realiza una interpoalcion lineal entre dos Quaternions con un parametro de interpolacion clampeado
+        {
+            t = Mathf.Clamp01(t);
+
+            return new Quat(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t, a.w + (b.w - a.w) * t);
+        }
+
+        public static Quat LerpUnclamped(Quat a, Quat b, float t) // Se realiza una interpoalcion lineal entre dos Quaternions con un parametro de interpolacion sin clampear
+        {
+            return new Quat(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t, a.w + (b.w - a.w) * t);
+        }
+
         public void Normalize() // Simplemente normalizar cada variable del quat sin devolver nada
         {
             float magnitude = Mathf.Sqrt(x * x + y * y + z * z + w * w);
