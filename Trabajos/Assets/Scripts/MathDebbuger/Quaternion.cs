@@ -235,8 +235,137 @@ namespace CustomMath
             float magnitude = Mathf.Sqrt(quaternion.x * quaternion.x + quaternion.y * quaternion.y + quaternion.z * quaternion.z + quaternion.w * quaternion.w);
             return new Quat(quaternion.x / magnitude, quaternion.y / magnitude, quaternion.z / magnitude, quaternion.w / magnitude);
         }
+
+        public static Quaternion RotateTowards(Quaternion from, Quaternion to, float maxDegreesDelta) // Se rota un quaternion hacia otro mediante un angulo maximo
+        {
+            float maxRadiansDelta = maxDegreesDelta * Mathf.Deg2Rad;
+
+            float angle = Quaternion.Angle(from, to);
+
+            if (angle <= maxRadiansDelta) 
+            {
+                return to;
+            }
+
+            float t = maxRadiansDelta / angle;
+
+            return Quaternion.Slerp(from, to, t);
+        }
+
+        public static Quat Slerp(Quat a, Quat b, float t) // Lerp en forma esferica. Se rota un quat mediante un parametro t clampeado, siempre por el camino mas corto
+        {
+            t = Mathf.Clamp01(t);
+
+            float dot = Quat.Dot(a, b);
+
+            if (dot < 0f) // SI uno esta mirando en la direccion contraria se da vuelta
+            {
+                b = Quat.Negate(b);
+                dot = -dot;
+            }
+
+            float epsilon = 1e-6f;
+            float oneMinusEpsilon = 1f - epsilon;
+
+            if (dot > oneMinusEpsilon) // Si estan cerca
+            {
+                Quat result = Quat.Lerp(a, b, t); // Interpolacion normal
+                return result.normalized;
+            }
+            else
+            {
+                float theta = Mathf.Acos(dot);
+                float sinTheta = Mathf.Sin(theta);
+
+                float factorA = Mathf.Sin((1f - t) * theta) / sinTheta;
+                float factorB = Mathf.Sin(t * theta) / sinTheta;
+
+                Quat result = factorA * a + factorB * b;
+                return result.normalized;
+            }
+        }
+
+        public static Quat SlerpUnclumped(Quat a, Quat b, float t) // Lerp en forma esferica. Se rota un quat mediante un parametro t sin clampear, siempre por el camino mas corto
+        {
+            float dot = Quat.Dot(a, b);
+
+            if (dot < 0f) // SI uno esta mirando en la direccion contraria se da vuelta
+            {
+                b = Quat.Negate(b);
+                dot = -dot;
+            }
+
+            float epsilon = 1e-6f;
+            float oneMinusEpsilon = 1f - epsilon;
+
+            if (dot > oneMinusEpsilon) // Si estan cerca
+            {
+                Quat result = Quat.Lerp(a, b, t); // Interpolacion normal
+                return result.normalized;
+            }
+            else
+            {
+                float theta = Mathf.Acos(dot);
+                float sinTheta = Mathf.Sin(theta);
+
+                float factorA = Mathf.Sin((1f - t) * theta) / sinTheta;
+                float factorB = Mathf.Sin(t * theta) / sinTheta;
+
+                Quat result = factorA * a + factorB * b;
+                return result.normalized;
+            }
+        }
+
+        public static Quat Negate(Quat quat) // Hacer que el quaternion mire en la direccion opuesta 
+        {
+            return new Quat(-quat.x, -quat.y, -quat.z, -quat.w);
+        }
         #endregion
 
+        #region Operators
+        public static Quat operator *(float scalar, Quat quat)
+        {
+            return new Quat(scalar * quat.x, scalar * quat.y, scalar * quat.z, scalar * quat.w);
+        }
+
+        public static Quat operator +(Quat quat1, Quat quat2)
+        {
+            return new Quat(quat1.x + quat2.x, quat1.y + quat2.y, quat1.z + quat2.z, quat1.w + quat2.w);
+        }
+
+        public static bool operator ==(Quat lhs, Quat rhs)
+        {
+            return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z && lhs.w == rhs.w;
+        }
+
+        public static bool operator !=(Quat lhs, Quat rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        public static Vector3 operator *(Quat rotation, Vector3 point)
+        {
+            Vector3 vector = new Vector3(rotation.x, rotation.y, rotation.z);
+
+            Vector3 crossProduct = Vector3.Cross(vector, point);
+
+            Vector3 scaledVector = 2f * rotation.w * crossProduct;
+
+            Vector3 multipliedVector = point + scaledVector + Vector3.Cross(vector, crossProduct);
+
+            return multipliedVector;
+        }
+
+        public static Quat operator *(Quat lhs, Quat rhs)
+        {
+            float x = lhs.w * rhs.x + lhs.x * rhs.w + lhs.y * rhs.z - lhs.z * rhs.y;
+            float y = lhs.w * rhs.y - lhs.x * rhs.z + lhs.y * rhs.w + lhs.z * rhs.x;
+            float z = lhs.w * rhs.z + lhs.x * rhs.y - lhs.y * rhs.x + lhs.z * rhs.w;
+            float w = lhs.w * rhs.w - lhs.x * rhs.x - lhs.y * rhs.y - lhs.z * rhs.z;
+
+            return new Quat(x, y, z, w);
+        }
+        #endregion 
     }
 
 }
