@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace CustomMath
@@ -315,6 +313,62 @@ namespace CustomMath
                 return result.normalized;
             }
         }
+
+        public void Set(float newX, float newY, float newZ, float newW)
+        {
+            x = newX;
+            y = newY;
+            z = newZ;
+            w = newW;
+        }
+
+        public void SetFromToRotation(Vec3 fromDirection, Vec3 toDirection) // Se crea una rotacion que empieza en fromDirection y termina en toDirection
+        {
+            Vec3 normalizedFrom = fromDirection.normalized;
+            Vec3 normalizedTo = toDirection.normalized;
+
+            float dot = Vec3.Dot(normalizedFrom, normalizedTo);
+
+            Vec3 cross = Vec3.Cross(normalizedFrom, normalizedTo);
+
+            x = cross.x;
+            y = cross.y;
+            z = cross.z;
+            w = 1f + dot;
+
+            Normalize();
+        }
+
+        public void ToAngleAxis(out float angle, out Vec3 axis) // Sirve para simplificar la visualizacion de quaternions.
+                                                                // Se representa la rotacion de un angulo a lo largo de un eje, el cual representa la direccion de la rotacion.
+                                                                // Mientras que el angulo representa la magnitud
+        {
+            Quat normalizedQuaternion = new Quat();
+            normalizedQuaternion.Normalize();
+
+            angle = 2f * Mathf.Acos(normalizedQuaternion.w) * Mathf.Rad2Deg;
+
+            float sinHalfAngle = Mathf.Sqrt(1f - normalizedQuaternion.w * normalizedQuaternion.w);
+            if (Mathf.Abs(sinHalfAngle) < 0.0001f)
+            {
+                axis = Vec3.Up; 
+            }
+            else
+            {
+                float invSinHalfAngle = 1f / sinHalfAngle;
+                axis = new Vec3(
+                    normalizedQuaternion.x * invSinHalfAngle,
+                    normalizedQuaternion.y * invSinHalfAngle,
+                    normalizedQuaternion.z * invSinHalfAngle
+                ).normalized;
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"({x}, {y}, {z}, {w})";
+        }
+
 
         public static Quat Negate(Quat quat) // Hacer que el quaternion mire en la direccion opuesta 
         {
