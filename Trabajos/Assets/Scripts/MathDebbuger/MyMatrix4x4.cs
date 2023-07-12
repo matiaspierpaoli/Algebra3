@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CustomMath
 {
-    public struct MyMatrix4x4
+    public struct MyMatrix4x4 : IEquatable<MyMatrix4x4>
     {
         #region Variables
         float m00;
@@ -518,6 +518,82 @@ namespace CustomMath
             return result;
         }
 
+        public void SetColumn(int index, Vector4 column) // Setear los valores de una columna de la matriz dependiendo de un indice
+        {
+            if (index == 0)
+            {
+                m00 = column.x;
+                m10 = column.y;
+                m20 = column.z;
+                m30 = column.w;
+            }
+            else if (index == 1)
+            {
+                m01 = column.x;
+                m11 = column.y;
+                m21 = column.z;
+                m31 = column.w;
+            }
+            else if (index == 2)
+            {
+                m02 = column.x;
+                m12 = column.y;
+                m22 = column.z;
+                m32 = column.w;
+            }
+            else if (index == 3)
+            {
+                m03 = column.x;
+                m13 = column.y;
+                m23 = column.z;
+                m33 = column.w;
+            }
+            else
+            {
+                throw new IndexOutOfRangeException("Invalid column index");
+            }
+        }
+
+        public void SetRow(int index, Vector4 row) // Setear los valores de una fila de la matriz dependiendo de un indice
+        {
+            if (index == 0)
+            {
+                m00 = row.x;
+                m01 = row.y;
+                m02 = row.z;
+                m03 = row.w;
+            }
+            else if (index == 1)
+            {
+                m10 = row.x;
+                m11 = row.y;
+                m12 = row.z;
+                m13 = row.w;
+            }
+            else if (index == 2)
+            {
+                m20 = row.x;
+                m21 = row.y;
+                m22 = row.z;
+                m23 = row.w;
+            }
+            else if (index == 3)
+            {
+                m30 = row.x;
+                m31 = row.y;
+                m32 = row.z;
+                m33 = row.w;
+            }
+            else
+            {
+                throw new IndexOutOfRangeException("Invalid row index");
+            }
+        }
+
+        public void SetTRS(Vec3 pos, Quat q, Vec3 s) // LLamado directo a la funcion TRS
+        {
+            this = TRS(pos,q,s);
+        }
 
 
         #endregion
@@ -563,6 +639,25 @@ namespace CustomMath
             return result;
         }
 
+        public static bool operator ==(MyMatrix4x4 lhs, MyMatrix4x4 rhs)
+        {
+            return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(MyMatrix4x4 lhs, MyMatrix4x4 rhs)
+        {
+            return !lhs.Equals(rhs);
+        }
+
+        public bool Equals(MyMatrix4x4 obj)
+        {
+            MyMatrix4x4 otherMatrix = obj;
+
+            return m00 == otherMatrix.m00 && m01 == otherMatrix.m01 && m02 == otherMatrix.m02 && m03 == otherMatrix.m03
+                && m10 == otherMatrix.m10 && m11 == otherMatrix.m11 && m12 == otherMatrix.m12 && m13 == otherMatrix.m13
+                && m20 == otherMatrix.m20 && m21 == otherMatrix.m21 && m22 == otherMatrix.m22 && m23 == otherMatrix.m23
+                && m30 == otherMatrix.m30 && m31 == otherMatrix.m31 && m32 == otherMatrix.m32 && m33 == otherMatrix.m33;
+        }
 
         #endregion
     }
