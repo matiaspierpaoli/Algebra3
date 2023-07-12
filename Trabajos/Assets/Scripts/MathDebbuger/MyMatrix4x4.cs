@@ -150,13 +150,9 @@ namespace CustomMath
                    m20 == 0f && m21 == 0f && m22 == 1f && m23 == 0f &&
                    m30 == 0f && m31 == 0f && m32 == 0f && m33 == 1f;
         }
-
-
-
         #endregion
 
         #region Methods
-
 
         private float Determinant(MyMatrix4x4 m) // Calcular el valor escalar asociado con una matriz "cuadrada", es decir, 2x2 o 3x3, etc
         {
@@ -227,6 +223,156 @@ namespace CustomMath
             return result;
         }
 
+        public static MyMatrix4x4 LookAt(Vec3 from, Vec3 to, Vec3 up) // Se calculan las matrices rotacion y traslacion y se multiplican para devolver esa matriz
+                                                                      // Sirve para alinear un objeto, comunmente camaras hacia un objetivo especifico
+        {
+            Vec3 forward = (to - from).normalized;
+            Vec3 right = Vec3.Cross(up, forward).normalized;
+            Vec3 actualUp = Vec3.Cross(forward, right).normalized;
+
+            MyMatrix4x4 rotation = new MyMatrix4x4();
+            rotation.m00 = right.x;
+            rotation.m01 = right.y;
+            rotation.m02 = right.z;
+            rotation.m03 = 0f;
+
+            rotation.m10 = actualUp.x;
+            rotation.m11 = actualUp.y;
+            rotation.m12 = actualUp.z;
+            rotation.m13 = 0f;
+
+            rotation.m20 = -forward.x;
+            rotation.m21 = -forward.y;
+            rotation.m22 = -forward.z;
+            rotation.m23 = 0f;
+
+            rotation.m30 = 0f;
+            rotation.m31 = 0f;
+            rotation.m32 = 0f;
+            rotation.m33 = 1f;
+
+            MyMatrix4x4 translation = new MyMatrix4x4();
+            translation.m00 = 1f;
+            translation.m01 = 0f;
+            translation.m02 = 0f;
+            translation.m03 = -from.x;
+
+            translation.m10 = 0f;
+            translation.m11 = 1f;
+            translation.m12 = 0f;
+            translation.m13 = -from.y;
+
+            translation.m20 = 0f;
+            translation.m21 = 0f;
+            translation.m22 = 1f;
+            translation.m23 = -from.z;
+
+            translation.m30 = 0f;
+            translation.m31 = 0f;
+            translation.m32 = 0f;
+            translation.m33 = 1f;
+
+            MyMatrix4x4 result = rotation * translation;
+
+            return result;
+        }
+
+        public static MyMatrix4x4 Rotate(Quat q) // Devuelve una matriz de rotacion, cada elemento de la matriz se obtiene operando sobre los componentes del quaternion
+                                                 // Sirve para rotar objetos en el espacio continuamente a la hora de generar graficos 3D, por ejemplo en la Matriz RTS
+        {
+            MyMatrix4x4 result;
+
+            float xx = q.x * q.x;
+            float xy = q.x * q.y;
+            float xz = q.x * q.z;
+            float xw = q.x * q.w;
+
+            float yy = q.y * q.y;
+            float yz = q.y * q.z;
+            float yw = q.y * q.w;
+
+            float zz = q.z * q.z;
+            float zw = q.z * q.w;
+
+            result.m00 = 1f - 2f * (yy + zz);
+            result.m01 = 2f * (xy - zw);
+            result.m02 = 2f * (xz + yw);
+            result.m03 = 0f;
+
+            result.m10 = 2f * (xy + zw);
+            result.m11 = 1f - 2f * (xx + zz);
+            result.m12 = 2f * (yz - xw);
+            result.m13 = 0f;
+
+            result.m20 = 2f * (xz - yw);
+            result.m21 = 2f * (yz + xw);
+            result.m22 = 1f - 2f * (xx + yy);
+            result.m23 = 0f;
+
+            result.m30 = 0f;
+            result.m31 = 0f;
+            result.m32 = 0f;
+            result.m33 = 1f;
+
+            return result;
+        }
+
+        public static MyMatrix4x4 Scale(Vec3 vector) // Se escalan los elementos en base a un parametro en forma de diagonal desde top-left hasta bottom-right
+                                                     // Sirve para escalar objetos en el espacio continuamente a la hora de generar graficos 3D, por ejemplo en la Matriz RTS
+        {
+            MyMatrix4x4 result;
+
+            result.m00 = vector.x;
+            result.m01 = 0f;
+            result.m02 = 0f;
+            result.m03 = 0f;
+
+            result.m10 = 0f;
+            result.m11 = vector.y;
+            result.m12 = 0f;
+            result.m13 = 0f;
+
+            result.m20 = 0f;
+            result.m21 = 0f;
+            result.m22 = vector.z;
+            result.m23 = 0f;
+
+            result.m30 = 0f;
+            result.m31 = 0f;
+            result.m32 = 0f;
+            result.m33 = 1f;
+
+            return result;
+        }
+
+        public static Matrix4x4 Translate(Vector3 vector) // Los elementos de la matriz de traslacion resultante en la ultima columna se remplazan por el vector designado  
+                                                          // Sirve para trasladar objetos en el espacio continuamente a la hora de generar graficos 3D, por ejemplo en la Matriz RTS
+        {
+            Matrix4x4 result;
+
+            result.m00 = 1f;
+            result.m01 = 0f;
+            result.m02 = 0f;
+            result.m03 = vector.x;
+
+            result.m10 = 0f;
+            result.m11 = 1f;
+            result.m12 = 0f;
+            result.m13 = vector.y;
+
+            result.m20 = 0f;
+            result.m21 = 0f;
+            result.m22 = 1f;
+            result.m23 = vector.z;
+
+            result.m30 = 0f;
+            result.m31 = 0f;
+            result.m32 = 0f;
+            result.m33 = 1f;
+
+            return result;
+        }
+
         public static MyMatrix4x4 Transpose(MyMatrix4x4 m) // Intercambia los valores de las filas por los de las columnas
                                                            // Ejemplo -> A = | 1 2 3 |   -> | 1 4 7 |
                                                            //                | 4 5 6 |      | 2 5 8 |
@@ -272,5 +418,48 @@ namespace CustomMath
 
         #endregion
 
+        #region Operators
+
+        public static Vector4 operator *(MyMatrix4x4 lhs, Vector4 vector)
+        {
+            Vector4 result;
+
+            result.x = lhs.m00 * vector.x + lhs.m01 * vector.y + lhs.m02 * vector.z + lhs.m03 * vector.w;
+            result.y = lhs.m10 * vector.x + lhs.m11 * vector.y + lhs.m12 * vector.z + lhs.m13 * vector.w;
+            result.z = lhs.m20 * vector.x + lhs.m21 * vector.y + lhs.m22 * vector.z + lhs.m23 * vector.w;
+            result.w = lhs.m30 * vector.x + lhs.m31 * vector.y + lhs.m32 * vector.z + lhs.m33 * vector.w;
+
+            return result;
+        }
+
+        public static MyMatrix4x4 operator *(MyMatrix4x4 lhs, MyMatrix4x4 rhs)
+        {
+            MyMatrix4x4 result;
+
+            result.m00 = lhs.m00 * rhs.m00 + lhs.m01 * rhs.m10 + lhs.m02 * rhs.m20 + lhs.m03 * rhs.m30;
+            result.m01 = lhs.m00 * rhs.m01 + lhs.m01 * rhs.m11 + lhs.m02 * rhs.m21 + lhs.m03 * rhs.m31;
+            result.m02 = lhs.m00 * rhs.m02 + lhs.m01 * rhs.m12 + lhs.m02 * rhs.m22 + lhs.m03 * rhs.m32;
+            result.m03 = lhs.m00 * rhs.m03 + lhs.m01 * rhs.m13 + lhs.m02 * rhs.m23 + lhs.m03 * rhs.m33;
+
+            result.m10 = lhs.m10 * rhs.m00 + lhs.m11 * rhs.m10 + lhs.m12 * rhs.m20 + lhs.m13 * rhs.m30;
+            result.m11 = lhs.m10 * rhs.m01 + lhs.m11 * rhs.m11 + lhs.m12 * rhs.m21 + lhs.m13 * rhs.m31;
+            result.m12 = lhs.m10 * rhs.m02 + lhs.m11 * rhs.m12 + lhs.m12 * rhs.m22 + lhs.m13 * rhs.m32;
+            result.m13 = lhs.m10 * rhs.m03 + lhs.m11 * rhs.m13 + lhs.m12 * rhs.m23 + lhs.m13 * rhs.m33;
+
+            result.m20 = lhs.m20 * rhs.m00 + lhs.m21 * rhs.m10 + lhs.m22 * rhs.m20 + lhs.m23 * rhs.m30;
+            result.m21 = lhs.m20 * rhs.m01 + lhs.m21 * rhs.m11 + lhs.m22 * rhs.m21 + lhs.m23 * rhs.m31;
+            result.m22 = lhs.m20 * rhs.m02 + lhs.m21 * rhs.m12 + lhs.m22 * rhs.m22 + lhs.m23 * rhs.m32;
+            result.m23 = lhs.m20 * rhs.m03 + lhs.m21 * rhs.m13 + lhs.m22 * rhs.m23 + lhs.m23 * rhs.m33;
+
+            result.m30 = lhs.m30 * rhs.m00 + lhs.m31 * rhs.m10 + lhs.m32 * rhs.m20 + lhs.m33 * rhs.m30;
+            result.m31 = lhs.m30 * rhs.m01 + lhs.m31 * rhs.m11 + lhs.m32 * rhs.m21 + lhs.m33 * rhs.m31;
+            result.m32 = lhs.m30 * rhs.m02 + lhs.m31 * rhs.m12 + lhs.m32 * rhs.m22 + lhs.m33 * rhs.m32;
+            result.m33 = lhs.m30 * rhs.m03 + lhs.m31 * rhs.m13 + lhs.m32 * rhs.m23 + lhs.m33 * rhs.m33;
+
+            return result;
+        }
+
+
+        #endregion
     }
 }
