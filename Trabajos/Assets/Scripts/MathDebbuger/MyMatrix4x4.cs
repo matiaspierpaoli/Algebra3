@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace CustomMath
@@ -116,7 +114,22 @@ namespace CustomMath
 
         #endregion
 
+        #region Properties
 
+        public static MyMatrix4x4 zero { get; } = new MyMatrix4x4();
+        public static MyMatrix4x4 identity { get; } = new MyMatrix4x4{ m00 = 1.0f, m11 = 1.0f, m22 = 1.0f, m33 = 1.0f};
+
+        public Quat rotation => GetRotation();
+
+        private Quat GetRotation()
+        {
+            Vec3 forward = new Vec3(m02, m12, m22).normalized; 
+            Vec3 upwards = new Vec3(m01, m11, m21).normalized; 
+
+            return Quat.LookRotation(forward, upwards);
+        }
+
+        #endregion
 
         #region Methods
 
