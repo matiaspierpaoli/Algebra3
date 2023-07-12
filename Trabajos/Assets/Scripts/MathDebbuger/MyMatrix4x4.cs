@@ -345,10 +345,10 @@ namespace CustomMath
             return result;
         }
 
-        public static Matrix4x4 Translate(Vector3 vector) // Los elementos de la matriz de traslacion resultante en la ultima columna se remplazan por el vector designado  
+        public static MyMatrix4x4 Translate(Vec3 vector) // Los elementos de la matriz de traslacion resultante en la ultima columna se remplazan por el vector designado  
                                                           // Sirve para trasladar objetos en el espacio continuamente a la hora de generar graficos 3D, por ejemplo en la Matriz RTS
         {
-            Matrix4x4 result;
+            MyMatrix4x4 result;
 
             result.m00 = 1f;
             result.m01 = 0f;
@@ -401,6 +401,68 @@ namespace CustomMath
             result.m33 = m.m33;
 
             return result;
+        }
+
+        public static MyMatrix4x4 TRS(Vec3 pos, Quat q, Vec3 s) // Se devuelve una matriz de transformacion que se calcula a partir de la trasalcion, rotatacion y escala en este order
+        {
+            MyMatrix4x4 translationMatrix = Translate(pos);
+            MyMatrix4x4 rotationMatrix = Rotate(q);
+            MyMatrix4x4 scaleMatrix = Scale(s);
+
+            MyMatrix4x4 result = translationMatrix * rotationMatrix * scaleMatrix;
+
+            return result;
+        }
+
+        public Vector4 GetColumn(int index) // Se devuelve un vector4 que se compone de los valores de la columna dependiente del indice pasado por parametro
+        {
+            Vector4 column;
+
+            if (index == 0)
+            {
+                column.x = m00;
+                column.y = m10;
+                column.z = m20;
+                column.w = m30;
+            }
+            else if (index == 1)
+            {
+                column.x = m01;
+                column.y = m11;
+                column.z = m21;
+                column.w = m31;
+            }
+            else if (index == 2)
+            {
+                column.x = m02;
+                column.y = m12;
+                column.z = m22;
+                column.w = m32;
+            }
+            else if (index == 3)
+            {
+                column.x = m03;
+                column.y = m13;
+                column.z = m23;
+                column.w = m33;
+            }
+            else
+            {
+                column = Vector4.zero;
+            }
+
+            return column;
+        }
+
+        public static Vec3 GetPosition(MyMatrix4x4 matrix) // La posicion es dependiente de la cuarta columna de la matriz designada
+        {
+            Vec3 position;
+
+            position.x = matrix.m03;
+            position.y = matrix.m13;
+            position.z = matrix.m23;
+
+            return position;
         }
 
         public static Vector4 GetRow(MyMatrix4x4 matrix, int index)
