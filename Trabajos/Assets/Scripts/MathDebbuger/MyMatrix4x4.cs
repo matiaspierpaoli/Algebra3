@@ -478,6 +478,48 @@ namespace CustomMath
             }
         }
 
+        public Vec3 MultiplyPoint(Vec3 point) // Se multiplican los componentes de la matriz 4x4 por el vector dado como parametro, tambien teniendo en cuanta la w
+                                              // siendo usada de forma homogenea como el divisor de cada componente x,y,z. Haciendo esto convertimos el punto a ejes cartesianos
+        {
+            Vec3 result;
+
+            result.x = m00 * point.x + m01 * point.y + m02 * point.z + m03;
+            result.y = m10 * point.x + m11 * point.y + m12 * point.z + m13;
+            result.z = m20 * point.x + m21 * point.y + m22 * point.z + m23;
+
+            float num = 1f / (m30 * point.x + m31 * point.y + m32 * point.z + m33);
+            result.x *= num;
+            result.y *= num;
+            result.z *= num;
+
+            return result;
+        }
+
+        public Vec3 MultiplyPoint3x4(Vec3 point) // El vector resultante es la multiplicacion de cada componente de una matriz por el punto dado como parametro,
+                                                 // exeptuando la ultima columna
+        {
+            Vec3 result;
+
+            result.x = m00 * point.x + m01 * point.y + m02 * point.z + m03;
+            result.y = m10 * point.x + m11 * point.y + m12 * point.z + m13;
+            result.z = m20 * point.x + m21 * point.y + m22 * point.z + m23;
+
+            return result;
+        }
+
+        public Vec3 MultiplyVector(Vec3 point) // El vector resultante es la multiplicacion de cada componente de una matriz 3x3 por el punto dado como parametro                                                      
+        {
+            Vec3 result;
+
+            result.x = m00 * point.x + m01 * point.y + m02 * point.z;
+            result.y = m10 * point.x + m11 * point.y + m12 * point.z;
+            result.z = m20 * point.x + m21 * point.y + m22 * point.z;
+
+            return result;
+        }
+
+
+
         #endregion
 
         #region Operators
