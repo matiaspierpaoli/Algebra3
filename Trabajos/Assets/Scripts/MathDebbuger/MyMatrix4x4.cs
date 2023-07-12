@@ -120,6 +120,11 @@ namespace CustomMath
         public static MyMatrix4x4 identity { get; } = new MyMatrix4x4{ m00 = 1.0f, m11 = 1.0f, m22 = 1.0f, m33 = 1.0f};
 
         public Quat rotation => GetRotation();
+        public Vec3 lossyScale => GetLossyScale();
+        public bool isIdentity => IsIdentity();
+        public float determinant => Determinant(this);
+        public MyMatrix4x4 transpose => Transpose(this);
+        public MyMatrix4x4 inverse => Inverse(this);
 
         private Quat GetRotation()
         {
@@ -129,12 +134,128 @@ namespace CustomMath
             return Quat.LookRotation(forward, upwards);
         }
 
+        private Vec3 GetLossyScale() // Calcula la escala al extraer las magnitudes en forma de vector3 de cada columna
+        {
+            Vec3 scale;
+            scale.x = new Vec3(m00, m10, m20).magnitude;
+            scale.y = new Vec3(m01, m11, m21).magnitude;
+            scale.z = new Vec3(m02, m12, m22).magnitude;
+            return scale;
+        }
+
+        private bool IsIdentity() // Chequear si la matrix no contiene transformaciones
+        {
+            return m00 == 1f && m01 == 0f && m02 == 0f && m03 == 0f &&
+                   m10 == 0f && m11 == 1f && m12 == 0f && m13 == 0f &&
+                   m20 == 0f && m21 == 0f && m22 == 1f && m23 == 0f &&
+                   m30 == 0f && m31 == 0f && m32 == 0f && m33 == 1f;
+        }
+
+
+
         #endregion
 
         #region Methods
 
 
+        private float Determinant(MyMatrix4x4 m) // Calcular el valor escalar asociado con una matriz "cuadrada", es decir, 2x2 o 3x3, etc
+        {
+            float det = 0f;
 
+            float subDet1 = m.m00 * (m.m11 * (m.m22 * m.m33 - m.m23 * m.m32) - m.m12 * (m.m21 * m.m33 - m.m23 * m.m31) + m.m13 * (m.m21 * m.m32 - m.m22 * m.m31));
+            float subDet2 = m.m01 * (m.m10 * (m.m22 * m.m33 - m.m23 * m.m32) - m.m12 * (m.m20 * m.m33 - m.m23 * m.m30) + m.m13 * (m.m20 * m.m32 - m.m22 * m.m30));
+            float subDet3 = m.m02 * (m.m10 * (m.m21 * m.m33 - m.m23 * m.m31) - m.m11 * (m.m20 * m.m33 - m.m23 * m.m30) + m.m13 * (m.m20 * m.m31 - m.m21 * m.m30));
+            float subDet4 = m.m03 * (m.m10 * (m.m21 * m.m32 - m.m22 * m.m31) - m.m11 * (m.m20 * m.m32 - m.m22 * m.m30) + m.m12 * (m.m20 * m.m31 - m.m21 * m.m30));
+
+            det = subDet1 - subDet2 + subDet3 - subDet4;
+
+            return det;
+        }
+
+        public static MyMatrix4x4 Inverse(MyMatrix4x4 m) // La matriz devuelta representa la transformacion a la inversa a matriz original,
+                                                         // cosa de que cuando a la matriz original se le multiplica la inversa se devuelve identity
+        {
+            MyMatrix4x4 result;
+
+            float det = m.determinant;
+
+            if (det != 0)
+            {
+                float invDet = 1f / det;
+
+                result.m00 = (m.m11 * m.m22 * m.m33 - m.m11 * m.m23 * m.m32 - m.m21 * m.m12 * m.m33 +
+                              m.m21 * m.m13 * m.m32 + m.m31 * m.m12 * m.m23 - m.m31 * m.m13 * m.m22) * invDet;
+                result.m01 = (-m.m01 * m.m22 * m.m33 + m.m01 * m.m23 * m.m32 + m.m21 * m.m02 * m.m33 -
+                              m.m21 * m.m03 * m.m32 - m.m31 * m.m02 * m.m23 + m.m31 * m.m03 * m.m22) * invDet;
+                result.m02 = (m.m01 * m.m12 * m.m33 - m.m01 * m.m13 * m.m32 - m.m11 * m.m02 * m.m33 +
+                              m.m11 * m.m03 * m.m32 + m.m31 * m.m02 * m.m13 - m.m31 * m.m03 * m.m12) * invDet;
+                result.m03 = (-m.m01 * m.m12 * m.m23 + m.m01 * m.m13 * m.m22 + m.m11 * m.m02 * m.m23 -
+                              m.m11 * m.m03 * m.m22 - m.m21 * m.m02 * m.m13 + m.m21 * m.m03 * m.m12) * invDet;
+
+                result.m10 = (-m.m10 * m.m22 * m.m33 + m.m10 * m.m23 * m.m32 + m.m20 * m.m12 * m.m33 -
+                              m.m20 * m.m13 * m.m32 - m.m30 * m.m12 * m.m23 + m.m30 * m.m13 * m.m22) * invDet;
+                result.m11 = (m.m00 * m.m22 * m.m33 - m.m00 * m.m23 * m.m32 - m.m20 * m.m02 * m.m33 +
+                              m.m20 * m.m03 * m.m32 + m.m30 * m.m02 * m.m23 - m.m30 * m.m03 * m.m22) * invDet;
+                result.m12 = (-m.m00 * m.m12 * m.m33 + m.m00 * m.m13 * m.m32 + m.m10 * m.m02 * m.m33 -
+                              m.m10 * m.m03 * m.m32 - m.m30 * m.m02 * m.m13 + m.m30 * m.m03 * m.m12) * invDet;
+                result.m13 = (m.m00 * m.m12 * m.m23 - m.m00 * m.m13 * m.m22 - m.m10 * m.m02 * m.m23 +
+                              m.m10 * m.m03 * m.m22 + m.m20 * m.m02 * m.m13 - m.m20 * m.m03 * m.m12) * invDet;
+
+                result.m20 = (m.m10 * m.m21 * m.m33 - m.m10 * m.m23 * m.m31 - m.m20 * m.m11 * m.m33 +
+                              m.m20 * m.m13 * m.m31 + m.m30 * m.m11 * m.m23 - m.m30 * m.m13 * m.m21) * invDet;
+                result.m21 = (-m.m00 * m.m21 * m.m33 + m.m00 * m.m23 * m.m31 + m.m20 * m.m01 * m.m33 -
+                              m.m20 * m.m03 * m.m31 - m.m30 * m.m01 * m.m23 + m.m30 * m.m03 * m.m21) * invDet;
+                result.m22 = (m.m00 * m.m11 * m.m33 - m.m00 * m.m13 * m.m31 - m.m10 * m.m01 * m.m33 +
+                              m.m10 * m.m03 * m.m31 + m.m30 * m.m01 * m.m13 - m.m30 * m.m03 * m.m11) * invDet;
+                result.m23 = (-m.m00 * m.m11 * m.m23 + m.m00 * m.m13 * m.m21 + m.m10 * m.m01 * m.m23 -
+                              m.m10 * m.m03 * m.m21 - m.m20 * m.m01 * m.m13 + m.m20 * m.m03 * m.m11) * invDet;
+
+                result.m30 = (-m.m10 * m.m21 * m.m32 + m.m10 * m.m22 * m.m31 + m.m20 * m.m11 * m.m32 -
+                              m.m20 * m.m12 * m.m31 - m.m30 * m.m11 * m.m22 + m.m30 * m.m12 * m.m21) * invDet;
+                result.m31 = (m.m00 * m.m21 * m.m32 - m.m00 * m.m22 * m.m31 - m.m20 * m.m01 * m.m32 +
+                              m.m20 * m.m02 * m.m31 + m.m30 * m.m01 * m.m22 - m.m30 * m.m02 * m.m21) * invDet;
+                result.m32 = (-m.m00 * m.m11 * m.m32 + m.m00 * m.m12 * m.m31 + m.m10 * m.m01 * m.m32 -
+                              m.m10 * m.m02 * m.m31 - m.m30 * m.m01 * m.m12 + m.m30 * m.m02 * m.m11) * invDet;
+                result.m33 = (m.m00 * m.m11 * m.m22 - m.m00 * m.m12 * m.m21 - m.m10 * m.m01 * m.m22 +
+                              m.m10 * m.m02 * m.m21 + m.m20 * m.m01 * m.m12 - m.m20 * m.m02 * m.m11) * invDet;
+            }
+            else
+            {
+                result = MyMatrix4x4.identity;
+            }
+
+            return result;
+        }
+
+        public static MyMatrix4x4 Transpose(MyMatrix4x4 m) // Intercambia los valores de las filas por los de las columnas
+                                                           // Ejemplo -> A = | 1 2 3 |   -> | 1 4 7 |
+                                                           //                | 4 5 6 |      | 2 5 8 |
+                                                           //                | 7 8 9 |      | 3 6 9 |
+        {
+            MyMatrix4x4 result;
+
+            result.m00 = m.m00;
+            result.m01 = m.m10;
+            result.m02 = m.m20;
+            result.m03 = m.m30;
+
+            result.m10 = m.m01;
+            result.m11 = m.m11;
+            result.m12 = m.m21;
+            result.m13 = m.m31;
+
+            result.m20 = m.m02;
+            result.m21 = m.m12;
+            result.m22 = m.m22;
+            result.m23 = m.m32;
+
+            result.m30 = m.m03;
+            result.m31 = m.m13;
+            result.m32 = m.m23;
+            result.m33 = m.m33;
+
+            return result;
+        }
 
         public static Vector4 GetRow(MyMatrix4x4 matrix, int index)
         {
