@@ -1,11 +1,8 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace CustomMath
+namespace Trabajos
 {
-    public struct Plane
+    public struct MyPlane
     {
         #region Constructors
 
@@ -14,10 +11,14 @@ namespace CustomMath
         /// </summary>
         /// <param name="inNormal">Normal del plano.</param>
         /// <param name="inPoint">Punto del plano.</param>
-        public Plane(Vec3 inNormal, Vec3 inPoint) 
+        public MyPlane(Vec3 inNormal, Vec3 inPoint) 
         {
             normal = inNormal.normalized;
             distance = -Vec3.Dot(inNormal, inPoint);
+
+            pointA = inPoint;
+            pointB = inPoint;
+            pointC = inPoint;
         }
 
         /// <summary>
@@ -25,10 +26,14 @@ namespace CustomMath
         /// </summary>
         /// <param name="inNormal">Normal del plano.</param>
         /// <param name="d">Distancia.</param>
-        public Plane(Vec3 inNormal, float d) 
+        public MyPlane(Vec3 inNormal, float d) 
         {
             normal = inNormal.normalized;
             distance = d / normal.sqrMagnitude;
+
+            pointA = Vec3.Zero;
+            pointB = Vec3.Zero;
+            pointC = Vec3.Zero;
         }
 
         /// <summary>
@@ -37,10 +42,14 @@ namespace CustomMath
         /// <param name="a">Primer punto del espacio.</param>
         /// <param name="b">Segundo punto del espacio.</param>
         /// <param name="c">Tercer punto del espacio.</param>
-        public Plane(Vec3 a, Vec3 b, Vec3 c)                                              
+        public MyPlane(Vec3 a, Vec3 b, Vec3 c)                                              
         {
             normal = Vec3.Cross(b - a, c - a).normalized;
             distance = -Vec3.Dot(normal, a);
+
+            pointA = a;
+            pointB = b;
+            pointC = c;
         }
         #endregion
 
@@ -52,9 +61,9 @@ namespace CustomMath
         /// <param name="plane">Plano dado.</param>
         /// <param name="translation">Trasalcion.</param>
         /// <returns> El nuevo plano trasladado.</returns>
-        public static Plane Translate(Plane plane, Vec3 translation)  
+        public static MyPlane Translate(MyPlane plane, Vec3 translation)  
         {
-            Plane translatedPlane = new Plane(plane.normal, plane.distance);
+            MyPlane translatedPlane = new MyPlane(plane.normal, plane.distance);
             translatedPlane.distance += Vec3.Dot(translation, plane.normal);
 
             return translatedPlane;
@@ -154,6 +163,11 @@ namespace CustomMath
 
         public Vec3 normal { get; set; }
         public float distance { get; set; }
+
+        // Ahora se guardan los tres puntos del plano
+        public Vec3 pointA;
+        public Vec3 pointB;
+        public Vec3 pointC;
     }
 }
 

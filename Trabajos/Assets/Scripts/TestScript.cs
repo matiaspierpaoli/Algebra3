@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CustomMath
+namespace Trabajos
 {
     public class TestScript : MonoBehaviour
     {

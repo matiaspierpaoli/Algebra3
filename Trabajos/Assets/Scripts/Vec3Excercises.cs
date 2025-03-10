@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MathDebbuger;
-using CustomMath;
+using Trabajos;
 
 public class Vec3Excercises : MonoBehaviour
 {

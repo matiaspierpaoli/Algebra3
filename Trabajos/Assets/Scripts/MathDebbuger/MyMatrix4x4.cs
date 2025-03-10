@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace CustomMath
+namespace Trabajos
 {
     public struct MyMatrix4x4 : IEquatable<MyMatrix4x4>
     {

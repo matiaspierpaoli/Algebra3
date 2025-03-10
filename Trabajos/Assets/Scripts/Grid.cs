@@ -1,21 +1,17 @@
 using UnityEngine;
-using CustomMath;
+using Trabajos;
 
 public class Grid : MonoBehaviour
 {
     [Header("Customize")]
-    [SerializeField] private float delta = 0.1f;
-    [SerializeField] private int size = 10;
+    [SerializeField] public bool isGridActive = false;
 
-    private static float gridDelta;
-    private static int gridSize;
-    private Vec3[,,] grid = new Vec3[gridSize, gridSize, gridSize];
+    [SerializeField] public static int gridSize = 10;
+    [SerializeField] public static float gridDelta = 1f;
+    [SerializeField] public static Vec3[,,] grid = new Vec3[gridSize, gridSize, gridSize];
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        gridDelta = delta;
-        gridSize = size;
 
         for (int i = 0; i < grid.GetLength(0); i++)
         {
